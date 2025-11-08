@@ -1,0 +1,120 @@
+{
+	"info": {
+		"_postman_id": "springboot-demo-collection",
+		"name": "Spring Boot Demo API",
+		"description": "Spring Boot 3 with JDK 21 项目 API 接口集合",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Hello API",
+			"item": [
+				{
+					"name": "Hello - 欢迎接口",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/hello",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"hello"
+							]
+						},
+						"description": "返回欢迎信息和当前时间"
+					},
+					"response": [
+						{
+							"name": "成功响应示例",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/hello",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"hello"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Hello, Spring Boot 3 with JDK 21!\",\n    \"timestamp\": \"2024-01-01T12:00:00\",\n    \"javaVersion\": \"21\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Info - 应用信息",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/info",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"info"
+							]
+						},
+						"description": "返回应用信息，包括版本号和 Java 版本"
+					},
+					"response": [
+						{
+							"name": "成功响应示例",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/info",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"info"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"application\": \"Spring Boot Demo\",\n    \"version\": \"1.0.0\",\n    \"javaVersion\": \"21\",\n    \"springBootVersion\": \"3.2.0\"\n}"
+						}
+					]
+				}
+			],
+			"description": "Hello 相关接口"
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}
+
