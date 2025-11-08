@@ -107,6 +107,260 @@
 				}
 			],
 			"description": "Hello 相关接口"
+		},
+		{
+			"name": "Auth API",
+			"item": [
+				{
+					"name": "Register - 用户注册",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"123456\",\n    \"email\": \"test@example.com\",\n    \"nickname\": \"测试用户\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "用户注册接口"
+					},
+					"response": [
+						{
+							"name": "成功响应示例",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"123456\",\n    \"email\": \"test@example.com\",\n    \"nickname\": \"测试用户\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/register",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"register"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"注册成功\",\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Login - 用户登录",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "用户登录接口"
+					},
+					"response": [
+						{
+							"name": "成功响应示例",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"123456\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/login",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"登录成功\",\n    \"data\": {\n        \"id\": 1,\n        \"username\": \"testuser\",\n        \"email\": \"test@example.com\",\n        \"nickname\": \"测试用户\",\n        \"createTime\": \"2024-01-01T12:00:00\",\n        \"updateTime\": \"2024-01-01T12:00:00\"\n    }\n}"
+						}
+					]
+				}
+			],
+			"description": "认证相关接口（注册、登录）"
+		},
+		{
+			"name": "Tab API",
+			"item": [
+				{
+					"name": "Get Tab List - 获取 Tab 列表",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/tab/list",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tab",
+								"list"
+							]
+						},
+						"description": "获取主页 Tab 列表（只返回启用的）"
+					},
+					"response": [
+						{
+							"name": "成功响应示例",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/tab/list",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"tab",
+										"list"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"操作成功\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"推荐\",\n            \"code\": \"recommend\",\n            \"sortOrder\": 1,\n            \"status\": 1\n        },\n        {\n            \"id\": 2,\n            \"name\": \"最新\",\n            \"code\": \"latest\",\n            \"sortOrder\": 2,\n            \"status\": 1\n        }\n    ]\n}"
+						}
+					]
+				}
+			],
+			"description": "Tab 相关接口"
+		},
+		{
+			"name": "Menu API",
+			"item": [
+				{
+					"name": "Get Menu List - 获取菜单列表",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/menu/list",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"menu",
+								"list"
+							]
+						},
+						"description": "获取菜单列表（包含 Tab 子项）"
+					},
+					"response": [
+						{
+							"name": "成功响应示例",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/menu/list",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"menu",
+										"list"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"操作成功\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"综合\",\n            \"code\": \"comprehensive\",\n            \"icon\": \"📋\",\n            \"sortOrder\": 1,\n            \"status\": 1,\n            \"tabs\": [\n                {\n                    \"id\": 1,\n                    \"name\": \"推荐\",\n                    \"code\": \"recommend\",\n                    \"sortOrder\": 1,\n                    \"status\": 1\n                },\n                {\n                    \"id\": 2,\n                    \"name\": \"最新\",\n                    \"code\": \"latest\",\n                    \"sortOrder\": 2,\n                    \"status\": 1\n                }\n            ]\n        }\n    ]\n}"
+						}
+					]
+				}
+			],
+			"description": "菜单相关接口"
 		}
 	],
 	"variable": [

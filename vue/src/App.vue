@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <nav class="navbar">
+    <nav v-if="!isJuejinPage" class="navbar">
       <div class="nav-container">
         <h1 class="logo">Vue 3 应用</h1>
         <ul class="nav-menu">
@@ -10,17 +10,27 @@
           <li>
             <router-link to="/about" class="nav-link">关于</router-link>
           </li>
+          <li>
+            <router-link to="/juejin" class="nav-link">掘金风格</router-link>
+          </li>
         </ul>
       </div>
     </nav>
-    <main class="main-content">
+    <main :class="['main-content', { 'full-screen': isJuejinPage }]">
       <router-view />
     </main>
   </div>
 </template>
 
 <script setup>
-// 使用 setup 语法，无需额外代码
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
+
+const isJuejinPage = computed(() => {
+  return route.name === 'Juejin'
+})
 </script>
 
 <style>
@@ -92,6 +102,11 @@
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
+}
+
+.main-content.full-screen {
+  padding: 0;
+  max-width: 100%;
 }
 </style>
 

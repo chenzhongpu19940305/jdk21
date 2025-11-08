@@ -2,7 +2,7 @@
  * API 请求封装
  */
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api'
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api'
 
 /**
  * 通用请求方法
@@ -27,8 +27,18 @@ async function request(url, options = {}) {
     const response = await fetch(`${BASE_URL}${url}`, config)
     const data = await response.json()
 
+    // 检查业务状态码
+    if (data.code && data.code !== 200) {
+      const error = new Error(data.message || '请求失败')
+      error.code = data.code
+      throw error
+    }
+
+    // HTTP 状态码错误
     if (!response.ok) {
-      throw new Error(data.message || '请求失败')
+      const error = new Error(data.message || '请求失败')
+      error.code = response.status
+      throw error
     }
 
     return data
