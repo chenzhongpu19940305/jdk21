@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.mapper.TabMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="TabResultMap" type="com.example.demo.entity.Tab">
+        <id column="id" property="id" />
+        <result column="menu_id" property="menuId" />
+        <result column="name" property="name" />
+        <result column="code" property="code" />
+        <result column="sort_order" property="sortOrder" />
+        <result column="status" property="status" />
+    </resultMap>
+
+    <!-- 查询所有启用的 Tab，按排序顺序 -->
+    <select id="findAllEnabled" resultMap="TabResultMap">
+        SELECT id, menu_id, name, code, sort_order, status
+        FROM tab
+        WHERE status = 1
+        ORDER BY sort_order ASC
+    </select>
+
+    <!-- 查询所有 Tab -->
+    <select id="findAll" resultMap="TabResultMap">
+        SELECT id, menu_id, name, code, sort_order, status
+        FROM tab
+        ORDER BY sort_order ASC
+    </select>
+
+    <!-- 根据菜单ID查询 Tab 列表 -->
+    <select id="findByMenuId" resultMap="TabResultMap">
+        SELECT id, menu_id, name, code, sort_order, status
+        FROM tab
+        WHERE menu_id = #{menuId}
+        ORDER BY sort_order ASC
+    </select>
+
+    <!-- 插入 Tab -->
+    <insert id="insert" parameterType="com.example.demo.entity.Tab" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tab (menu_id, name, code, sort_order, status)
+        VALUES (#{menuId}, #{name}, #{code}, #{sortOrder}, #{status})
+    </insert>
+
+    <!-- 根据 ID 删除 Tab -->
+    <delete id="deleteById">
+        DELETE FROM tab
+        WHERE id = #{id}
+    </delete>
+
+</mapper>
+
+
+
+

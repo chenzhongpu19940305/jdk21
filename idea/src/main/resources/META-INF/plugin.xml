@@ -1,0 +1,59 @@
+<idea-plugin>
+    <!-- 插件唯一标识符 -->
+    <id>com.example.my-intellij-plugin</id>
+    
+    <!-- 插件名称 -->
+    <name>浏览器启动器</name>
+    
+    <!-- 插件版本 -->
+    <version>1.0.0</version>
+    
+    <!-- 插件供应商信息 -->
+    <vendor email="support@example.com" url="https://www.example.com">Example</vendor>
+    
+    <!-- 插件描述 -->
+    <description><![CDATA[
+    浏览器启动器插件 - 快速打开常用网页
+    
+    功能特点：
+    - 输入 URL 创建快捷按钮
+    - 点击按钮在浏览器中打开网页
+    - 支持管理多个 URL 按钮
+    - 自动规范化 URL（自动添加 https://）
+    ]]></description>
+    
+    <!-- 变更日志 -->
+    <change-notes><![CDATA[
+    初始版本发布
+    ]]></change-notes>
+    
+    <!-- 兼容的 IDE 版本 -->
+    <idea-version since-build="232" until-build="242.*"/>
+    
+    <!-- 依赖的其他插件 -->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.java</depends>
+    
+    <!-- 扩展点配置 -->
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- 注册工具窗口 -->
+        <toolWindow id="BrowserLauncher"
+                    secondary="false"
+                    anchor="right"
+                    factoryClass="com.example.BrowserLauncherToolWindowFactory"
+                    />
+    </extensions>
+    
+    <!-- Actions 配置 -->
+    <actions>
+        <!-- 浏览器启动器菜单项 -->
+        <action id="com.example.BrowserLauncherAction"
+                class="com.example.BrowserLauncherAction"
+                text="浏览器启动器"
+                description="打开浏览器启动器工具窗口">
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt B"/>
+        </action>
+    </actions>
+</idea-plugin>
+

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.mapper.ArticleMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="ArticleResultMap" type="com.example.demo.entity.Article">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="menu_id" property="menuId" />
+        <result column="tab_code" property="tabCode" />
+        <result column="title" property="title" />
+        <result column="summary" property="summary" />
+        <result column="content" property="content" />
+        <result column="tags" property="tags" />
+        <result column="views" property="views" />
+        <result column="likes" property="likes" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 插入文章 -->
+    <insert id="insert" parameterType="com.example.demo.entity.Article" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO article (user_id, menu_id, tab_code, title, summary, content, tags, views, likes, create_time, update_time)
+        VALUES (#{userId}, #{menuId}, #{tabCode}, #{title}, #{summary}, #{content}, #{tags}, 0, 0, NOW(), NOW())
+    </insert>
+
+    <!-- 根据 ID 查询文章 -->
+    <select id="findById" resultMap="ArticleResultMap">
+        SELECT id, user_id, menu_id, tab_code, title, summary, content, tags, views, likes, create_time, update_time
+        FROM article
+        WHERE id = #{id}
+    </select>
+
+    <!-- 查询文章列表 -->
+    <select id="findList" resultMap="ArticleResultMap">
+        SELECT id, user_id, menu_id, tab_code, title, summary, content, tags, views, likes, create_time, update_time
+        FROM article
+        ORDER BY create_time DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 根据用户 ID 查询文章列表 -->
+    <select id="findByUserId" resultMap="ArticleResultMap">
+        SELECT id, user_id, menu_id, tab_code, title, summary, content, tags, views, likes, create_time, update_time
+        FROM article
+        WHERE user_id = #{userId}
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 根据菜单ID和Tab代码查询文章列表 -->
+    <select id="findByMenuIdAndTabCode" resultMap="ArticleResultMap">
+        SELECT id, user_id, menu_id, tab_code, title, summary, content, tags, views, likes, create_time, update_time
+        FROM article
+        WHERE menu_id = #{menuId}
+        AND tab_code = #{tabCode}
+        ORDER BY create_time DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 更新文章 -->
+    <update id="update" parameterType="com.example.demo.entity.Article">
+        UPDATE article
+        SET title = #{title},
+            summary = #{summary},
+            content = #{content},
+            tags = #{tags},
+            update_time = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除文章 -->
+    <delete id="delete">
+        DELETE FROM article
+        WHERE id = #{id}
+    </delete>
+
+    <!-- 搜索文章（按标题和内容） -->
+    <select id="searchArticles" resultMap="ArticleResultMap">
+        SELECT id, user_id, menu_id, tab_code, title, summary, content, tags, views, likes, create_time, update_time
+        FROM article
+        WHERE (title LIKE CONCAT('%', #{keyword}, '%') OR content LIKE CONCAT('%', #{keyword}, '%'))
+        ORDER BY create_time DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+</mapper>
+

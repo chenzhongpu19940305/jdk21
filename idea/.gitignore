@@ -1,0 +1,23 @@
+# Gradle
+.gradle/
+build/
+out/
+*.iml
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.ipr
+
+# 插件构建产物
+*.zip
+*.jar
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+
+
+
+

@@ -1,0 +1,29 @@
+========================================
+浏览器启动器插件 - 构建说明
+========================================
+
+最简单的方法（推荐）：
+-------------------
+1. 在 IntelliJ IDEA 中打开 idea 文件夹
+2. 等待 Gradle 同步完成
+3. 打开底部 Terminal，运行：
+   Windows: gradlew.bat buildPlugin
+   Mac/Linux: ./gradlew buildPlugin
+4. 构建完成后，插件文件在：build/distributions/MyIntelliJPlugin-1.0.0.zip
+
+安装插件：
+--------
+1. File -> Settings -> Plugins
+2. 点击齿轮图标 -> Install Plugin from Disk...
+3. 选择 build/distributions/MyIntelliJPlugin-1.0.0.zip
+4. 点击 OK，重启 IDEA
+
+详细说明请查看：
+- BUILD_INSTRUCTIONS.md
+- INSTALL_GUIDE.md
+- QUICK_BUILD.md
+
+
+
+
+
