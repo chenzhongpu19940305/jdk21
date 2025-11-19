@@ -136,7 +136,7 @@
 								"register"
 							]
 						},
-						"description": "用户注册接口"
+						"description": "用户注册接口\n\n参数说明：\n- username: 用户名（必填）\n- password: 密码（必填，长度不能少于6位）\n- email: 邮箱（可选）\n- nickname: 昵称（可选）"
 					},
 					"response": [
 						{
@@ -204,7 +204,7 @@
 								"login"
 							]
 						},
-						"description": "用户登录接口"
+						"description": "用户登录接口\n\n参数说明：\n- username: 用户名（必填）\n- password: 密码（必填）"
 					},
 					"response": [
 						{
@@ -251,62 +251,6 @@
 			"description": "认证相关接口（注册、登录）"
 		},
 		{
-			"name": "Tab API",
-			"item": [
-				{
-					"name": "Get Tab List - 获取 Tab 列表",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/api/tab/list",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"tab",
-								"list"
-							]
-						},
-						"description": "获取主页 Tab 列表（只返回启用的）"
-					},
-					"response": [
-						{
-							"name": "成功响应示例",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/api/tab/list",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"tab",
-										"list"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"code\": 200,\n    \"message\": \"操作成功\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"推荐\",\n            \"code\": \"recommend\",\n            \"sortOrder\": 1,\n            \"status\": 1\n        },\n        {\n            \"id\": 2,\n            \"name\": \"最新\",\n            \"code\": \"latest\",\n            \"sortOrder\": 2,\n            \"status\": 1\n        }\n    ]\n}"
-						}
-					]
-				}
-			],
-			"description": "Tab 相关接口"
-		},
-		{
 			"name": "Menu API",
 			"item": [
 				{
@@ -325,7 +269,7 @@
 								"list"
 							]
 						},
-						"description": "获取菜单列表（包含 Tab 子项）"
+						"description": "获取菜单列表（包含 Tab 子项）\n\n注意：此接口返回的菜单数据中已经包含了每个菜单下的所有 Tab 子项，因此通常不需要单独调用 /api/tab/list 接口。"
 					},
 					"response": [
 						{
@@ -358,9 +302,936 @@
 							"body": "{\n    \"code\": 200,\n    \"message\": \"操作成功\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"综合\",\n            \"code\": \"comprehensive\",\n            \"icon\": \"📋\",\n            \"sortOrder\": 1,\n            \"status\": 1,\n            \"tabs\": [\n                {\n                    \"id\": 1,\n                    \"name\": \"推荐\",\n                    \"code\": \"recommend\",\n                    \"sortOrder\": 1,\n                    \"status\": 1\n                },\n                {\n                    \"id\": 2,\n                    \"name\": \"最新\",\n                    \"code\": \"latest\",\n                    \"sortOrder\": 2,\n                    \"status\": 1\n                }\n            ]\n        }\n    ]\n}"
 						}
 					]
+				},
+				{
+					"name": "Create Menu - 创建菜单",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"新分类\",\n    \"code\": \"new-category\",\n    \"icon\": \"🆕\",\n    \"sortOrder\": 12,\n    \"status\": 1\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/menu/create",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"menu",
+								"create"
+							]
+						},
+						"description": "创建菜单接口\n\n参数说明：\n- name: 菜单名称（必填）\n- code: 菜单代码（必填，英文，全局唯一）\n- icon: 菜单图标（可选，默认📋）\n- sortOrder: 排序顺序（可选，默认0）\n- status: 状态（可选，0-禁用，1-启用，默认1）"
+					},
+					"response": [
+						{
+							"name": "成功响应示例",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"新分类\",\n    \"code\": \"new-category\",\n    \"icon\": \"🆕\",\n    \"sortOrder\": 12,\n    \"status\": 1\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/menu/create",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"menu",
+										"create"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"创建成功\",\n    \"data\": {\n        \"id\": 12,\n        \"name\": \"新分类\",\n        \"code\": \"new-category\",\n        \"icon\": \"🆕\",\n        \"sortOrder\": 12,\n        \"status\": 1\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Menu - 删除菜单",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/menu/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"menu",
+								"1"
+							]
+						},
+						"description": "删除菜单接口\n\n路径参数：\n- id: 菜单ID\n\n注意：删除菜单后，该菜单及其下的所有 Tab 和文章将无法通过菜单访问。"
+					},
+					"response": [
+						{
+							"name": "成功响应示例",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/menu/1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"menu",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"删除成功\",\n    \"data\": null\n}"
+						}
+					]
 				}
 			],
 			"description": "菜单相关接口"
+		},
+		{
+			"name": "Tab API",
+			"item": [
+				{
+					"name": "Get Tab List - 获取 Tab 列表",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/tab/list?menuId=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tab",
+								"list"
+							],
+							"query": [
+								{
+									"key": "menuId",
+									"value": "1",
+									"description": "菜单ID（可选），如果提供则返回该菜单下的 Tab 列表"
+								}
+							]
+						},
+						"description": "获取 Tab 列表\n\n查询参数：\n- menuId: 菜单ID（可选），如果提供则返回该菜单下的 Tab 列表，否则返回所有启用的 Tab"
+					},
+					"response": [
+						{
+							"name": "成功响应示例",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/tab/list?menuId=1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"tab",
+										"list"
+									],
+									"query": [
+										{
+											"key": "menuId",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"操作成功\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"menuId\": 1,\n            \"name\": \"推荐\",\n            \"code\": \"recommend\",\n            \"sortOrder\": 1,\n            \"status\": 1\n        },\n        {\n            \"id\": 2,\n            \"menuId\": 1,\n            \"name\": \"最新\",\n            \"code\": \"latest\",\n            \"sortOrder\": 2,\n            \"status\": 1\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Tab - 创建 Tab",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"menuId\": 1,\n    \"name\": \"热门\",\n    \"code\": \"hot\",\n    \"sortOrder\": 3,\n    \"status\": 1\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/tab/create",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tab",
+								"create"
+							]
+						},
+						"description": "创建 Tab 接口\n\n参数说明：\n- menuId: 菜单ID（必填）\n- name: Tab 名称（必填）\n- code: Tab 代码（必填，英文，同一菜单下不能重复）\n- sortOrder: 排序顺序（可选，默认0）\n- status: 状态（可选，0-禁用，1-启用，默认1）"
+					},
+					"response": [
+						{
+							"name": "成功响应示例",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"menuId\": 1,\n    \"name\": \"热门\",\n    \"code\": \"hot\",\n    \"sortOrder\": 3,\n    \"status\": 1\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/tab/create",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"tab",
+										"create"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"创建成功\",\n    \"data\": {\n        \"id\": 3,\n        \"menuId\": 1,\n        \"name\": \"热门\",\n        \"code\": \"hot\",\n        \"sortOrder\": 3,\n        \"status\": 1\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Tab - 删除 Tab",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/tab/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tab",
+								"1"
+							]
+						},
+						"description": "删除 Tab 接口\n\n路径参数：\n- id: Tab ID\n\n注意：删除 Tab 后，该 Tab 下的文章将无法通过菜单访问。"
+					},
+					"response": [
+						{
+							"name": "成功响应示例",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/tab/1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"tab",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"删除成功\",\n    \"data\": null\n}"
+						}
+					]
+				}
+			],
+			"description": "Tab 管理相关接口"
+		},
+		{
+			"name": "Article API",
+			"item": [
+				{
+					"name": "Publish Article - 发布文章",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"我的第一篇文章\",\n    \"summary\": \"这是文章的摘要\",\n    \"content\": \"<p>这是文章的内容，支持富文本格式，包括图片和视频。</p><img src=\\\"http://localhost:9000/demo-bucket/images/uuid.jpg\\\" alt=\\\"图片\\\" />\",\n    \"tags\": [\"Vue\", \"Spring Boot\", \"Java\"],\n    \"userId\": 1,\n    \"menuId\": 1,\n    \"tabCode\": \"recommend\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/article/publish",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"article",
+								"publish"
+							]
+						},
+						"description": "发布文章接口\n\n参数说明：\n- title: 文章标题（必填）\n- summary: 文章摘要（可选）\n- content: 文章内容，支持 HTML 富文本（必填），图片和视频应使用 MinIO URL，不能包含 base64 数据\n- tags: 文章标签数组（可选）\n- userId: 用户ID（必填）\n- menuId: 菜单ID（可选）\n- tabCode: Tab 代码（可选）"
+					},
+					"response": [
+						{
+							"name": "成功响应示例",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"我的第一篇文章\",\n    \"summary\": \"这是文章的摘要\",\n    \"content\": \"<p>这是文章的内容，支持富文本格式，包括图片和视频。</p><img src=\\\"http://localhost:9000/demo-bucket/images/uuid.jpg\\\" alt=\\\"图片\\\" />\",\n    \"tags\": [\"Vue\", \"Spring Boot\", \"Java\"],\n    \"userId\": 1,\n    \"menuId\": 1,\n    \"tabCode\": \"recommend\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/article/publish",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"article",
+										"publish"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"发布成功\",\n    \"data\": {\n        \"id\": 1,\n        \"title\": \"我的第一篇文章\",\n        \"summary\": \"这是文章的摘要\",\n        \"content\": \"<p>这是文章的内容，支持富文本格式，包括图片和视频。</p><img src=\\\"http://localhost:9000/demo-bucket/images/uuid.jpg\\\" alt=\\\"图片\\\" />\",\n        \"tags\": \"Vue,Spring Boot,Java\",\n        \"userId\": 1,\n        \"menuId\": 1,\n        \"tabCode\": \"recommend\",\n        \"views\": 0,\n        \"likes\": 0,\n        \"createTime\": \"2024-01-01T12:00:00\",\n        \"updateTime\": \"2024-01-01T12:00:00\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Article List - 获取文章列表",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/article/list?menuId=1&tabCode=recommend&page=1&pageSize=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"article",
+								"list"
+							],
+							"query": [
+								{
+									"key": "menuId",
+									"value": "1",
+									"description": "菜单ID（可选）"
+								},
+								{
+									"key": "tabCode",
+									"value": "recommend",
+									"description": "Tab 代码（可选）"
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "页码，默认1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10",
+									"description": "每页数量，默认10"
+								}
+							]
+						},
+						"description": "获取文章列表\n\n查询参数说明：\n- menuId: 菜单ID（可选），如果提供则按菜单筛选\n- tabCode: Tab 代码（可选），如果提供则按 Tab 筛选\n- page: 页码，默认1\n- pageSize: 每页数量，默认10\n\n如果不提供 menuId 和 tabCode，则返回所有文章。"
+					},
+					"response": [
+						{
+							"name": "成功响应示例",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/article/list?menuId=1&tabCode=recommend&page=1&pageSize=10",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"article",
+										"list"
+									],
+									"query": [
+										{
+											"key": "menuId",
+											"value": "1"
+										},
+										{
+											"key": "tabCode",
+											"value": "recommend"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"操作成功\",\n    \"data\": {\n        \"list\": [\n            {\n                \"id\": 1,\n                \"title\": \"我的第一篇文章\",\n                \"summary\": \"这是文章的摘要\",\n                \"tags\": \"Vue,Spring Boot,Java\",\n                \"userId\": 1,\n                \"menuId\": 1,\n                \"tabCode\": \"recommend\",\n                \"views\": 100,\n                \"likes\": 10,\n                \"createTime\": \"2024-01-01T12:00:00\",\n                \"updateTime\": \"2024-01-01T12:00:00\"\n            }\n        ],\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Article Detail - 获取文章详情",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/article/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"article",
+								"1"
+							]
+						},
+						"description": "获取文章详情\n\n路径参数：\n- id: 文章ID"
+					},
+					"response": [
+						{
+							"name": "成功响应示例",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/article/1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"article",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"操作成功\",\n    \"data\": {\n        \"id\": 1,\n        \"title\": \"我的第一篇文章\",\n        \"summary\": \"这是文章的摘要\",\n        \"content\": \"<p>这是文章的内容，支持富文本格式，包括图片和视频。</p><img src=\\\"http://localhost:9000/demo-bucket/images/uuid.jpg\\\" alt=\\\"图片\\\" />\",\n        \"tags\": \"Vue,Spring Boot,Java\",\n        \"userId\": 1,\n        \"menuId\": 1,\n        \"tabCode\": \"recommend\",\n        \"views\": 100,\n        \"likes\": 10,\n        \"createTime\": \"2024-01-01T12:00:00\",\n        \"updateTime\": \"2024-01-01T12:00:00\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Article - 更新文章",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"更新后的文章标题\",\n    \"summary\": \"更新后的文章摘要\",\n    \"content\": \"<p>更新后的文章内容，支持富文本格式，包括图片和视频。</p><img src=\\\"http://localhost:9000/demo-bucket/images/uuid.jpg\\\" alt=\\\"图片\\\" />\",\n    \"tags\": [\"Vue\", \"Spring Boot\", \"Java\", \"更新\"],\n    \"userId\": 1\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/article/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"article",
+								"1"
+							]
+						},
+						"description": "更新文章接口\n\n路径参数：\n- id: 文章ID\n\n请求体参数说明：\n- title: 文章标题（必填）\n- summary: 文章摘要（可选）\n- content: 文章内容，支持 HTML 富文本（必填），图片和视频应使用 MinIO URL，不能包含 base64 数据\n- tags: 文章标签数组（可选）\n- userId: 用户ID（必填），用于验证是否为文章作者\n\n注意：只有文章作者才能更新文章。"
+					},
+					"response": [
+						{
+							"name": "成功响应示例",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"更新后的文章标题\",\n    \"summary\": \"更新后的文章摘要\",\n    \"content\": \"<p>更新后的文章内容，支持富文本格式，包括图片和视频。</p><img src=\\\"http://localhost:9000/demo-bucket/images/uuid.jpg\\\" alt=\\\"图片\\\" />\",\n    \"tags\": [\"Vue\", \"Spring Boot\", \"Java\", \"更新\"],\n    \"userId\": 1\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/article/1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"article",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"更新成功\",\n    \"data\": {\n        \"id\": 1,\n        \"title\": \"更新后的文章标题\",\n        \"summary\": \"更新后的文章摘要\",\n        \"content\": \"<p>更新后的文章内容，支持富文本格式，包括图片和视频。</p><img src=\\\"http://localhost:9000/demo-bucket/images/uuid.jpg\\\" alt=\\\"图片\\\" />\",\n        \"tags\": \"Vue,Spring Boot,Java,更新\",\n        \"userId\": 1,\n        \"menuId\": 1,\n        \"tabCode\": \"recommend\",\n        \"views\": 100,\n        \"likes\": 10,\n        \"createTime\": \"2024-01-01T12:00:00\",\n        \"updateTime\": \"2024-01-01T13:00:00\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Article - 删除文章",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/article/1?userId=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"article",
+								"1"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "1",
+									"description": "用户ID（必填），用于验证是否为文章作者"
+								}
+							]
+						},
+						"description": "删除文章接口\n\n路径参数：\n- id: 文章ID\n\n查询参数：\n- userId: 用户ID（必填），用于验证是否为文章作者\n\n注意：只有文章作者才能删除文章。"
+					},
+					"response": [
+						{
+							"name": "成功响应示例",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/article/1?userId=1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"article",
+										"1"
+									],
+									"query": [
+										{
+											"key": "userId",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"删除成功\",\n    \"data\": null\n}"
+						}
+					]
+				}
+			],
+			"description": "文章相关接口"
+		},
+		{
+			"name": "File API",
+			"item": [
+				{
+					"name": "Upload Image - 上传图片",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": [],
+									"description": "图片文件（支持 jpg, jpeg, png, gif, webp），最大 10MB"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/file/upload/image",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"file",
+								"upload",
+								"image"
+							]
+						},
+						"description": "上传图片到 MinIO\n\n参数说明：\n- file: 图片文件（必填）\n  - 支持格式：jpg, jpeg, png, gif, webp\n  - 最大大小：10MB\n\n返回 MinIO URL，可直接用于文章内容中。"
+					},
+					"response": [
+						{
+							"name": "成功响应示例",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/file/upload/image",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"file",
+										"upload",
+										"image"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"上传成功\",\n    \"data\": \"http://localhost:9000/demo-bucket/images/uuid.jpg\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Upload Video - 上传视频",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": [],
+									"description": "视频文件（支持 mp4, webm, ogg），最大 100MB"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/file/upload/video",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"file",
+								"upload",
+								"video"
+							]
+						},
+						"description": "上传视频到 MinIO\n\n参数说明：\n- file: 视频文件（必填）\n  - 支持格式：mp4, webm, ogg\n  - 最大大小：100MB\n\n返回 MinIO URL，可直接用于文章内容中。"
+					},
+					"response": [
+						{
+							"name": "成功响应示例",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/file/upload/video",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"file",
+										"upload",
+										"video"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"上传成功\",\n    \"data\": \"http://localhost:9000/demo-bucket/videos/uuid.mp4\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get File - 获取文件（代理访问 MinIO）",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/file/get/images/uuid.jpg",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"file",
+								"get",
+								"images",
+								"uuid.jpg"
+							]
+						},
+						"description": "通过后端代理获取 MinIO 中的文件\n\n支持两种方式：\n1. 从路径中获取对象名称：GET /api/file/get/images/uuid.jpg\n2. 从 URL 参数中获取：GET /api/file/get?url=http://localhost:9000/demo-bucket/images/uuid.jpg\n\n此接口用于解决 MinIO 直接访问的 CORS 或权限问题，前端可以通过此接口访问 MinIO 中的文件。"
+					},
+					"response": [
+						{
+							"name": "成功响应示例（图片）",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/file/get/images/uuid.jpg",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"file",
+										"get",
+										"images",
+										"uuid.jpg"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "image/jpeg"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "public, max-age=31536000"
+								}
+							],
+							"cookie": [],
+							"body": "[二进制图片数据]"
+						}
+					]
+				},
+				{
+					"name": "Get File (by URL) - 通过 URL 参数获取文件",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/file/get?url=http://localhost:9000/demo-bucket/images/uuid.jpg",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"file",
+								"get"
+							],
+							"query": [
+								{
+									"key": "url",
+									"value": "http://localhost:9000/demo-bucket/images/uuid.jpg",
+									"description": "MinIO 文件的完整 URL"
+								}
+							]
+						},
+						"description": "通过 URL 参数获取 MinIO 中的文件\n\n这是获取文件的另一种方式，通过 URL 参数传递 MinIO 文件的完整地址。"
+					},
+					"response": [
+						{
+							"name": "成功响应示例（图片）",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/file/get?url=http://localhost:9000/demo-bucket/images/uuid.jpg",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"file",
+										"get"
+									],
+									"query": [
+										{
+											"key": "url",
+											"value": "http://localhost:9000/demo-bucket/images/uuid.jpg"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "image/jpeg"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "public, max-age=31536000"
+								}
+							],
+							"cookie": [],
+							"body": "[二进制图片数据]"
+						}
+					]
+				}
+			],
+			"description": "文件上传和获取相关接口（MinIO）"
 		}
 	],
 	"variable": [
@@ -371,4 +1242,3 @@
 		}
 	]
 }
-

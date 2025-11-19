@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <nav v-if="!isJuejinPage" class="navbar">
+    <nav v-if="!isFullScreenPage" class="navbar">
       <div class="nav-container">
         <h1 class="logo">Vue 3 应用</h1>
         <ul class="nav-menu">
@@ -8,15 +8,15 @@
             <router-link to="/" class="nav-link">首页</router-link>
           </li>
           <li>
-            <router-link to="/about" class="nav-link">关于</router-link>
+            <router-link to="/juejin" class="nav-link">掘金风格</router-link>
           </li>
           <li>
-            <router-link to="/juejin" class="nav-link">掘金风格</router-link>
+            <router-link to="/web-content" class="nav-link">网页阅读器</router-link>
           </li>
         </ul>
       </div>
     </nav>
-    <main :class="['main-content', { 'full-screen': isJuejinPage }]">
+    <main :class="['main-content', { 'full-screen': isFullScreenPage }]">
       <router-view />
     </main>
   </div>
@@ -30,6 +30,10 @@ const route = useRoute()
 
 const isJuejinPage = computed(() => {
   return route.name === 'Juejin'
+})
+
+const isFullScreenPage = computed(() => {
+  return route.name === 'Juejin' || route.name === 'WebContentReader' || route.name === 'ArticleDetail'
 })
 </script>
 
