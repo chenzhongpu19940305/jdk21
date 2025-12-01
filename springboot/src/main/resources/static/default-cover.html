@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate Default Cover</title>
+</head>
+<body>
+<canvas id="canvas" width="320" height="180"></canvas>
+<script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // 背景渐变
+    const gradient = ctx.createLinearGradient(0, 0, 320, 180);
+    gradient.addColorStop(0, '#667eea');
+    gradient.addColorStop(1, '#764ba2');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 320, 180);
+    
+    // 播放按钮
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+    ctx.beginPath();
+    ctx.moveTo(140, 60);
+    ctx.lineTo(140, 120);
+    ctx.lineTo(190, 90);
+    ctx.closePath();
+    ctx.fill();
+    
+    // 文字
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+    ctx.font = 'bold 16px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('Video Cover', 160, 150);
+    
+    // 下载图片
+    canvas.toBlob(blob => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'default-cover.png';
+        a.click();
+    });
+</script>
+</body>
+</html>
