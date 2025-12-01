@@ -8,6 +8,9 @@
             <router-link to="/" class="nav-link">首页</router-link>
           </li>
           <li>
+            <router-link to="/bilibili" class="nav-link">哔哩哔哩</router-link>
+          </li>
+          <li>
             <router-link to="/juejin" class="nav-link">掘金风格</router-link>
           </li>
           <li>
@@ -33,7 +36,7 @@ const isJuejinPage = computed(() => {
 })
 
 const isFullScreenPage = computed(() => {
-  return route.name === 'Juejin' || route.name === 'WebContentReader' || route.name === 'ArticleDetail'
+  return route.name === 'Home' || route.name === 'Bilibili' || route.name === 'Juejin' || route.name === 'WebContentReader' || route.name === 'ArticleDetail'
 })
 </script>
 
@@ -106,11 +109,16 @@ const isFullScreenPage = computed(() => {
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .main-content.full-screen {
   padding: 0;
   max-width: 100%;
+  margin: 0;
+  height: 100vh;
 }
 </style>
 

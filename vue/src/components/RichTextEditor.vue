@@ -77,6 +77,10 @@ const videoHandler = () => {
 
     // 获取当前光标位置
     const range = quill.getSelection(true)
+    if (!range) {
+      console.error('无法获取光标位置')
+      return
+    }
     
     // 插入占位符
     quill.insertText(range.index, '上传中...', 'user')
@@ -87,9 +91,20 @@ const videoHandler = () => {
       if (response.code === 200 && response.data) {
         // 删除占位符
         quill.deleteText(range.index, 3)
-        // 插入视频
-        quill.insertEmbed(range.index, 'video', response.data)
-        quill.setSelection(range.index + 1)
+        
+        // 使用HTML方式插入视频
+        const videoUrl = response.data
+        const videoHtml = `<p><video controls style='max-width: 100%;'><source src='${videoUrl}' type='${file.type}'></video></p>`
+        
+        // 使用clipboard转换HTML为Delta并插入
+        const clipboard = quill.clipboard
+        const delta = clipboard.convert(videoHtml)
+        const Delta = quill.constructor.import('delta')
+        quill.updateContents(
+          new Delta().retain(range.index).concat(delta),
+          'user'
+        )
+        quill.setSelection(range.index + delta.length())
       } else {
         quill.deleteText(range.index, 3)
         quill.insertText(range.index, '视频上传失败', 'user')

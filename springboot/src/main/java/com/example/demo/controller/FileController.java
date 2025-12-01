@@ -60,14 +60,30 @@ public class FileController {
     @PostMapping("/upload/video")
     public ApiResponse<String> uploadVideo(@RequestParam("file") MultipartFile file) {
         try {
-            if (file.isEmpty()) {
+            if (file == null || file.isEmpty()) {
                 return ApiResponse.error(400, "文件不能为空");
             }
 
-            // 验证文件类型
+            // 验证文件类型（放宽验证，支持更多视频格式）
             String contentType = file.getContentType();
-            if (contentType == null || !contentType.startsWith("video/")) {
-                return ApiResponse.error(400, "只能上传视频文件");
+            String originalFilename = file.getOriginalFilename();
+            boolean isVideoFile = false;
+            
+            if (contentType != null && contentType.startsWith("video/")) {
+                isVideoFile = true;
+            } else if (originalFilename != null) {
+                // 通过文件扩展名判断
+                String lowerFilename = originalFilename.toLowerCase();
+                if (lowerFilename.endsWith(".mp4") || lowerFilename.endsWith(".webm") || 
+                    lowerFilename.endsWith(".ogg") || lowerFilename.endsWith(".avi") ||
+                    lowerFilename.endsWith(".mov") || lowerFilename.endsWith(".wmv") ||
+                    lowerFilename.endsWith(".flv") || lowerFilename.endsWith(".mkv")) {
+                    isVideoFile = true;
+                }
+            }
+            
+            if (!isVideoFile) {
+                return ApiResponse.error(400, "只能上传视频文件（支持 mp4, webm, ogg, avi, mov, wmv, flv, mkv 格式）");
             }
 
             // 验证文件大小（限制100MB）
@@ -78,6 +94,7 @@ public class FileController {
             String url = fileService.uploadVideo(file);
             return ApiResponse.success("上传成功", url);
         } catch (Exception e) {
+            e.printStackTrace(); // 打印详细错误堆栈
             return ApiResponse.error("上传失败：" + e.getMessage());
         }
     }

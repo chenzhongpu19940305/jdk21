@@ -22,10 +22,10 @@
             </div>
             
             <div class="form-item form-item-summary">
-              <label>视频描述</label>
+              <label>视频简介</label>
               <textarea 
                 v-model="form.summary" 
-                placeholder="请输入视频描述（可选）"
+                placeholder="请输入视频简介（可选）"
                 rows="3"
                 maxlength="200"
                 class="form-textarea"
@@ -61,30 +61,51 @@
             <label>视频文件 <span class="required">*</span></label>
             <div class="video-upload-area">
               <input 
-                ref="videoInputRef"
+                ref="fileInputRef"
                 type="file" 
                 accept="video/*"
-                @change="handleVideoSelect"
-                class="video-input"
+                @change="handleFileChange"
+                class="file-input"
                 style="display: none"
               />
-              <div v-if="!videoFile && !uploadingVideo" class="upload-placeholder" @click="triggerVideoSelect">
+              <div 
+                v-if="!videoFile && !uploadingVideo"
+                class="upload-placeholder"
+                @click="triggerFileInput"
+              >
                 <div class="upload-icon">📹</div>
                 <div class="upload-text">点击选择视频文件</div>
-                <div class="upload-hint">支持 MP4、WebM、OGG 等格式</div>
+                <div class="upload-hint">支持 mp4, webm, ogg 格式，最大 100MB</div>
               </div>
-              <div v-if="videoFile && !uploadingVideo" class="video-preview">
+              <div 
+                v-else-if="uploadingVideo"
+                class="upload-progress"
+              >
+                <div class="progress-text">上传中... {{ uploadProgress }}%</div>
+                <div class="progress-bar">
+                  <div class="progress-fill" :style="{ width: uploadProgress + '%' }"></div>
+                </div>
+              </div>
+              <div 
+                v-else-if="videoFile && videoUrl"
+                class="video-preview"
+              >
+                <video 
+                  :src="videoUrl" 
+                  controls
+                  class="preview-video"
+                ></video>
                 <div class="video-info">
                   <div class="video-name">{{ videoFile.name }}</div>
                   <div class="video-size">{{ formatFileSize(videoFile.size) }}</div>
+                  <button 
+                    type="button"
+                    class="change-video-btn"
+                    @click="triggerFileInput"
+                  >
+                    更换视频
+                  </button>
                 </div>
-                <button type="button" class="change-video-btn" @click="triggerVideoSelect">更换视频</button>
-              </div>
-              <div v-if="uploadingVideo" class="uploading-status">
-                <div class="upload-progress">上传中... {{ uploadProgress }}%</div>
-              </div>
-              <div v-if="videoUrl" class="video-preview-url">
-                <video :src="videoUrl" controls class="preview-video"></video>
               </div>
             </div>
           </div>
@@ -95,7 +116,7 @@
           
           <div class="form-actions">
             <button type="button" class="cancel-btn" @click="close">取消</button>
-            <button type="submit" class="submit-btn" :disabled="loading || !videoUrl">
+            <button type="submit" class="submit-btn" :disabled="loading || uploadingVideo || !videoUrl">
               {{ loading ? '发布中...' : '发布视频' }}
             </button>
           </div>
@@ -133,7 +154,7 @@ const emit = defineEmits(['update:visible', 'success'])
 const loading = ref(false)
 const error = ref('')
 const tagInput = ref('')
-const videoInputRef = ref(null)
+const fileInputRef = ref(null)
 const videoFile = ref(null)
 const videoUrl = ref('')
 const uploadingVideo = ref(false)
@@ -171,13 +192,11 @@ const close = () => {
   emit('update:visible', false)
 }
 
-const triggerVideoSelect = () => {
-  if (videoInputRef.value) {
-    videoInputRef.value.click()
-  }
+const triggerFileInput = () => {
+  fileInputRef.value.click()
 }
 
-const handleVideoSelect = async (event) => {
+const handleFileChange = async (event) => {
   const file = event.target.files[0]
   if (!file) return
 
@@ -187,20 +206,16 @@ const handleVideoSelect = async (event) => {
     return
   }
 
-  // 验证文件大小（限制为500MB）
-  const maxSize = 500 * 1024 * 1024
-  if (file.size > maxSize) {
-    error.value = '视频文件大小不能超过500MB'
+  // 验证文件大小（100MB）
+  if (file.size > 100 * 1024 * 1024) {
+    error.value = '视频文件大小不能超过100MB'
     return
   }
 
   error.value = ''
   videoFile.value = file
 
-  // 创建预览URL
-  if (videoUrl.value) {
-    URL.revokeObjectURL(videoUrl.value)
-  }
+  // 创建本地预览URL
   videoUrl.value = URL.createObjectURL(file)
 
   // 上传视频
@@ -208,21 +223,53 @@ const handleVideoSelect = async (event) => {
   uploadProgress.value = 0
 
   try {
-    const response = await uploadVideo(file)
-    if (response.code === 200 && response.data) {
-      videoUrl.value = response.data
-      form.content = `<video src="${response.data}" controls style="max-width: 100%;"></video>`
-      uploadProgress.value = 100
-    } else {
-      error.value = response.message || '视频上传失败'
-      videoFile.value = null
-      videoUrl.value = ''
-    }
+    // 注意：这里使用fetch API来支持上传进度
+    const formData = new FormData()
+    formData.append('file', file)
+
+    const xhr = new XMLHttpRequest()
+    
+    xhr.upload.addEventListener('progress', (e) => {
+      if (e.lengthComputable) {
+        uploadProgress.value = Math.round((e.loaded / e.total) * 100)
+      }
+    })
+
+    const uploadPromise = new Promise((resolve, reject) => {
+      xhr.addEventListener('load', () => {
+        if (xhr.status === 200) {
+          try {
+            const data = JSON.parse(xhr.responseText)
+            if (data.code === 200 && data.data) {
+              resolve(data.data)
+            } else {
+              reject(new Error(data.message || '上传失败'))
+            }
+          } catch (e) {
+            reject(new Error('解析响应失败'))
+          }
+        } else {
+          reject(new Error('上传失败'))
+        }
+      })
+
+      xhr.addEventListener('error', () => {
+        reject(new Error('上传失败'))
+      })
+
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api'
+      xhr.open('POST', `${apiBaseUrl}/file/upload/video`)
+      xhr.send(formData)
+    })
+
+    const url = await uploadPromise
+    videoUrl.value = url
+    form.content = `<video controls style="max-width: 100%;"><source src="${url}" type="${file.type}"></video>`
   } catch (err) {
-    error.value = err.message || '视频上传失败，请稍后重试'
+    console.error('视频上传失败:', err)
+    error.value = err.message || '视频上传失败，请重试'
     videoFile.value = null
     videoUrl.value = ''
-    console.error('视频上传失败:', err)
   } finally {
     uploadingVideo.value = false
     uploadProgress.value = 0
@@ -476,18 +523,28 @@ const handleSubmit = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  background-color: #fafafa;
+  transition: all 0.3s;
 }
 
 .upload-placeholder {
   text-align: center;
-  cursor: pointer;
   padding: 40px;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-upload-area:hover .upload-placeholder {
+  border-color: #1e80ff;
+  background-color: #f7f8fa;
 }
 
 .upload-icon {
-  font-size: 48px;
+  font-size: 64px;
   margin-bottom: 16px;
 }
 
@@ -502,22 +559,61 @@ const handleSubmit = async () => {
   color: #8a919f;
 }
 
+.upload-progress {
+  width: 100%;
+  padding: 40px;
+  text-align: center;
+}
+
+.progress-text {
+  font-size: 14px;
+  color: #515767;
+  margin-bottom: 16px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: #1e80ff;
+  transition: width 0.3s;
+}
+
 .video-preview {
   width: 100%;
   padding: 20px;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.preview-video {
+  width: 100%;
+  max-height: 400px;
+  border-radius: 8px;
+  background-color: #000;
 }
 
 .video-info {
-  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
 }
 
 .video-name {
+  flex: 1;
   font-size: 14px;
-  color: #252933;
-  margin-bottom: 4px;
+  color: #515767;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .video-size {
@@ -539,28 +635,6 @@ const handleSubmit = async () => {
 .change-video-btn:hover {
   border-color: #1e80ff;
   color: #1e80ff;
-}
-
-.uploading-status {
-  width: 100%;
-  padding: 40px;
-  text-align: center;
-}
-
-.upload-progress {
-  font-size: 14px;
-  color: #1e80ff;
-}
-
-.video-preview-url {
-  width: 100%;
-  padding: 20px;
-}
-
-.preview-video {
-  width: 100%;
-  max-width: 800px;
-  border-radius: 8px;
 }
 
 .error-message {
@@ -619,4 +693,3 @@ const handleSubmit = async () => {
   cursor: not-allowed;
 }
 </style>
-
