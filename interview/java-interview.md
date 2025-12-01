@@ -26,18 +26,14 @@
 
 ```mermaid
 flowchart LR
-    A[用户在 vivo 商城下单] --> B[订单服务
-    (Spring Boot)]
-    B -->|写入 DB| C[(订单数据库)]
-    B -->|发送下单事件| D[kafka/rocketmq 订单主题]
+    A[用户在 vivo 商城下单] --> B[订单服务(Sprint Boot)]
+    B -->|写入DB| C[(订单数据库)]
+    B -->|发送下单事件| D[订单消息主题(Kafka/RocketMQ)]
 
-    D --> E[流式计算引擎
-    (Flink/Spark Streaming)]
-    E -->|按 1 分钟窗口聚合| F[(Redis/TSDB
-    存储每分钟下单量)]
+    D --> E[流式计算引擎(Flink/Spark Streaming)]
+    E -->|按1分钟窗口聚合| F[(Redis/TSDB-每分钟下单量)]
 
-    F --> G[监控 & 报表系统
-    (大屏/运营后台)]
+    F --> G[监控与报表系统]
 ```
 
 ### 关键技术点拆解
@@ -239,23 +235,19 @@ sequenceDiagram
 
 ```mermaid
 flowchart LR
-    C[客户端/APP/H5] --> G[网关 Gateway]
-    G --> S[购物车服务
-    (Spring Boot 集群)]
+    C[客户端/APP/H5] --> G[网关Gateway]
+    G --> S[购物车服务集群]
 
-    S --> R[(Redis 集群
-    按 userId 分片存购物车)]
-    S --> DB[(MySQL 购物车历史/备份表)]
+    S --> R[(Redis集群-按userId分片)]
+    S --> DB[(MySQL购物车备份表)]
 
-    S --> MQ[消息队列
-    (异步落库/同步库存/推荐等)]
+    S --> MQ[消息队列-异步落库/库存/推荐]
 
     R -->|热点数据| R
 
     subgraph Protect[稳定性保障]
-      L[限流/熔断] -.-> S
-      D[降级策略
-      (只读、简单列表)] -.-> C
+      L[限流与熔断] -.-> S
+      D[降级策略-只读/精简列表] -.-> C
     end
 ```
 
