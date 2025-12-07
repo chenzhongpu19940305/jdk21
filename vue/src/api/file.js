@@ -1,4 +1,5 @@
 import { post } from './index'
+import { getServerBaseUrl } from '../utils/index.js'
 
 /**
  * 上传图片
@@ -9,7 +10,7 @@ export function uploadImage(file) {
   const formData = new FormData()
   formData.append('file', file)
   
-  return fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api'}/file/upload/image`, {
+  return fetch(`${getServerBaseUrl()}/file/upload/image`, {
     method: 'POST',
     body: formData
   }).then(async (response) => {
@@ -37,7 +38,7 @@ export function uploadVideo(file) {
   const formData = new FormData()
   formData.append('file', file)
   
-  return fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api'}/file/upload/video`, {
+  return fetch(`${getServerBaseUrl()}/file/upload/video`, {
     method: 'POST',
     body: formData
   }).then(async (response) => {
@@ -55,6 +56,7 @@ export function uploadVideo(file) {
     return data
   })
 }
+
 
 
 

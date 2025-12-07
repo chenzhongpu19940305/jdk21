@@ -2,7 +2,15 @@
  * API 请求封装
  */
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api'
+import { getServerBaseUrl } from '../utils/index.js'
+
+/**
+ * 获取当前API基础URL（支持动态配置）
+ * @returns {string} API基础URL
+ */
+function getBaseUrl() {
+  return getServerBaseUrl()
+}
 
 /**
  * 通用请求方法
@@ -24,7 +32,8 @@ async function request(url, options = {}) {
   }
 
   try {
-    const response = await fetch(`${BASE_URL}${url}`, config)
+    const baseUrl = getBaseUrl()
+    const response = await fetch(`${baseUrl}${url}`, config)
     const data = await response.json()
 
     // 检查业务状态码

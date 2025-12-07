@@ -3,7 +3,7 @@
  * 将 MinIO 的 URL 转换为后端代理 URL，以便前端可以正常访问
  */
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api'
+import { getServerBaseUrl } from './index.js'
 
 /**
  * 将 MinIO URL 转换为后端代理 URL
@@ -17,6 +17,9 @@ export function convertMinioUrlToProxyUrl(minioUrl) {
   if (minioUrl.includes('/api/file/get/')) {
     return minioUrl
   }
+  
+  // 获取当前配置的服务器地址
+  const BASE_URL = getServerBaseUrl()
   
   // 提取对象名称（如：images/uuid.jpg）
   try {

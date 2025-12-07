@@ -22,7 +22,7 @@ server:
   servlet:
     context-path: /
 
-# MyBatis 配置
+# MyBatis 配置root
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.example.demo.entity

@@ -16,20 +16,26 @@
           <li>
             <router-link to="/web-content" class="nav-link">网页阅读器</router-link>
           </li>
+          <li>
+            <button class="nav-link nav-button" @click="showConfigDialog = true">服务器配置</button>
+          </li>
         </ul>
       </div>
     </nav>
     <main :class="['main-content', { 'full-screen': isFullScreenPage }]">
       <router-view />
     </main>
+    <ServerConfigDialog v-model:visible="showConfigDialog" @saved="handleConfigSaved" />
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import ServerConfigDialog from './components/ServerConfigDialog.vue'
 
 const route = useRoute()
+const showConfigDialog = ref(false)
 
 const isJuejinPage = computed(() => {
   return route.name === 'Juejin'
@@ -38,6 +44,11 @@ const isJuejinPage = computed(() => {
 const isFullScreenPage = computed(() => {
   return route.name === 'Home' || route.name === 'Bilibili' || route.name === 'Juejin' || route.name === 'WebContentReader' || route.name === 'ArticleDetail'
 })
+
+function handleConfigSaved() {
+  // 配置保存后的回调
+  console.log('服务器配置已更新')
+}
 </script>
 
 <style>
@@ -101,6 +112,12 @@ const isFullScreenPage = computed(() => {
 .nav-link.router-link-active {
   color: #42b983;
   background-color: rgba(66, 185, 131, 0.2);
+}
+
+.nav-button {
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
 .main-content {

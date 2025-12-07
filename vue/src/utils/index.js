@@ -61,6 +61,75 @@ export function throttle(func, limit = 300) {
   }
 }
 
+/**
+ * 服务器配置相关工具函数
+ */
+const SERVER_CONFIG_KEY = 'vue_app_server_config'
+
+/**
+ * 获取服务器基础URL
+ * @returns {string} 服务器基础URL
+ */
+export function getServerBaseUrl() {
+  // 优先级：localStorage > 环境变量 > 默认值
+  const savedConfig = localStorage.getItem(SERVER_CONFIG_KEY)
+  if (savedConfig) {
+    try {
+      const config = JSON.parse(savedConfig)
+      if (config.baseUrl) {
+        return config.baseUrl
+      }
+    } catch (e) {
+      console.error('解析服务器配置失败:', e)
+    }
+  }
+  
+  // 环境变量配置
+  const envUrl = import.meta.env.VITE_API_BASE_URL
+  if (envUrl) {
+    return envUrl
+  }
+  
+  // 默认值
+  return 'http://localhost:8080/api'
+}
+
+/**
+ * 设置服务器基础URL
+ * @param {string} baseUrl - 服务器基础URL（例如：http://192.168.1.100:8080/api）
+ */
+export function setServerBaseUrl(baseUrl) {
+  const config = {
+    baseUrl: baseUrl,
+    updatedAt: new Date().toISOString()
+  }
+  localStorage.setItem(SERVER_CONFIG_KEY, JSON.stringify(config))
+}
+
+/**
+ * 获取服务器配置
+ * @returns {object} 服务器配置对象
+ */
+export function getServerConfig() {
+  const savedConfig = localStorage.getItem(SERVER_CONFIG_KEY)
+  if (savedConfig) {
+    try {
+      return JSON.parse(savedConfig)
+    } catch (e) {
+      console.error('解析服务器配置失败:', e)
+    }
+  }
+  return null
+}
+
+/**
+ * 清除服务器配置（恢复默认）
+ */
+export function clearServerConfig() {
+  localStorage.removeItem(SERVER_CONFIG_KEY)
+}
+
+
 
 
 
