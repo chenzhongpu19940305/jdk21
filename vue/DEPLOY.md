@@ -85,21 +85,121 @@ npm run build
    serve -s dist -l 3000
    ```
 
-#### 方式三：使用Docker部署
+#### 方式三：使用Docker部署（推荐，最简单）
 
-1. **创建Dockerfile**
-   ```dockerfile
-   FROM nginx:alpine
-   COPY dist /usr/share/nginx/html
-   EXPOSE 80
-   CMD ["nginx", "-g", "daemon off;"]
-   ```
+Docker部署是最简单的方式，项目已经包含了完整的Docker配置文件。
 
-2. **构建和运行**
+**前置要求：**
+- Linux服务器已安装Docker和Docker Compose
+- 如果未安装，可以运行：
+  ```bash
+  # 安装Docker
+  curl -fsSL https://get.docker.com -o get-docker.sh
+  sh get-docker.sh
+  
+  # 安装Docker Compose
+  sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+  sudo chmod +x /usr/local/bin/docker-compose
+  ```
+
+**部署步骤：**
+
+1. **配置生产环境变量**
+   
+   在项目根目录创建 `.env.production` 文件：
    ```bash
-   docker build -t vue-app .
-   docker run -d -p 80:80 vue-app
+   VITE_API_BASE_URL=http://your-backend-server:8080/api
    ```
+   
+   **注意：** 如果后端服务在Docker容器中，可以使用容器名称或服务名称作为主机名。
+
+2. **上传项目文件到服务器**
+   ```bash
+   # 使用scp上传（在本地执行）
+   scp -r vue/* user@your-server:/opt/vue-app/
+   
+   # 或者使用git克隆
+   git clone your-repo
+   cd vue
+   ```
+
+3. **使用Docker Compose部署（推荐）**
+   ```bash
+   cd /opt/vue-app
+   
+   # 构建并启动容器
+   docker-compose up -d --build
+   
+   # 查看日志
+   docker-compose logs -f
+   
+   # 停止服务
+   docker-compose down
+   ```
+
+4. **或者使用Docker命令部署**
+   ```bash
+   # 构建镜像
+   docker build -t vue-app:latest .
+   
+   # 运行容器
+   docker run -d \
+     --name vue-app \
+     -p 80:80 \
+     --restart unless-stopped \
+     vue-app:latest
+   
+   # 查看日志
+   docker logs -f vue-app
+   
+   # 停止容器
+   docker stop vue-app
+   docker rm vue-app
+   ```
+
+5. **使用构建参数传递环境变量（可选）**
+   
+   如果需要动态设置环境变量，可以使用 `Dockerfile.build-arg`：
+   ```bash
+   docker build \
+     --build-arg VITE_API_BASE_URL=http://192.168.1.100:8080/api \
+     -f Dockerfile.build-arg \
+     -t vue-app:latest .
+   
+   docker run -d -p 80:80 vue-app:latest
+   ```
+
+6. **验证部署**
+   
+   访问 `http://your-server-ip`，应该能看到Vue应用。
+
+**Docker部署的优势：**
+- ✅ 环境一致，避免"在我机器上能跑"的问题
+- ✅ 一键部署，无需手动配置Nginx
+- ✅ 易于扩展和维护
+- ✅ 支持快速回滚
+- ✅ 包含Gzip压缩和缓存优化
+
+**常用Docker命令：**
+```bash
+# 查看运行中的容器
+docker ps
+
+# 查看容器日志
+docker logs vue-app
+
+# 进入容器（调试用）
+docker exec -it vue-app sh
+
+# 重启容器
+docker restart vue-app
+
+# 更新应用（重新构建）
+docker-compose up -d --build
+
+# 查看镜像大小
+docker images vue-app
+```
 
 ### 5. 验证部署
 

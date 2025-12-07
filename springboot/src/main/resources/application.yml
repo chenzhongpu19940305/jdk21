@@ -4,7 +4,7 @@ spring:
   
   # 数据源配置 (MySQL 数据库)
   datasource:
-    url: jdbc:mysql://localhost:3307/demo_db?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://8.152.220.39:3307/demo_db?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: root
@@ -32,7 +32,7 @@ mybatis:
 
 # MinIO 配置
 minio:
-  endpoint: http://localhost:9000
+  endpoint: http://8.152.220.39:9000
   accessKey: minioadmin
   secretKey: minioadmin
   bucket: demo-bucket

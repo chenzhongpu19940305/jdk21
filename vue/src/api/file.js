@@ -57,6 +57,36 @@ export function uploadVideo(file) {
   })
 }
 
+/**
+ * 通过视频链接上传视频
+ * @param {string} videoUrl - 视频链接地址
+ * @returns {Promise} 上传结果
+ */
+export function uploadVideoFromUrl(videoUrl) {
+  return fetch(`${getServerBaseUrl()}/videos/upload-from-url`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      videoUrl: videoUrl
+    })
+  }).then(async (response) => {
+    const data = await response.json()
+    if (data.code && data.code !== 200) {
+      const error = new Error(data.message || '上传失败')
+      error.code = data.code
+      throw error
+    }
+    if (!response.ok) {
+      const error = new Error(data.message || '上传失败')
+      error.code = response.status
+      throw error
+    }
+    return data
+  })
+}
+
 
 
 

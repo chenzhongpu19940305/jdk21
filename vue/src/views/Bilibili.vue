@@ -14,6 +14,9 @@
           <button class="upload-btn" @click="showUploadForm = true">
             <i class="iconfont icon-upload"></i> 投稿
           </button>
+          <button class="upload-link-btn" @click="showLinkUploadForm = true">
+            <i class="iconfont icon-link"></i> 链接上传
+          </button>
         </div>
       </div>
 
@@ -41,6 +44,51 @@
         </div>
       </div>
     </header>
+
+    <!-- 通过链接上传视频弹窗 -->
+    <div class="modal-overlay" v-if="showLinkUploadForm" @click.self="showLinkUploadForm = false">
+      <div class="upload-modal">
+        <div class="modal-header">
+          <h3>通过链接上传视频</h3>
+          <span class="close-btn" @click="showLinkUploadForm = false">&times;</span>
+        </div>
+        <div class="modal-body">
+          <div class="link-upload-area">
+            <div class="form-group">
+              <label>视频链接：</label>
+              <input 
+                v-model="videoLink" 
+                type="text" 
+                placeholder="请输入视频链接（支持 http/https 开头的视频直链）"
+                class="link-input"
+                :disabled="isDownloading"
+              />
+              <p class="link-hint">支持直接访问的视频链接，例如：https://example.com/video.mp4</p>
+            </div>
+            <div v-if="isDownloading" class="downloading-content">
+              <div class="download-progress">
+                <div class="progress-bar">
+                  <div class="progress" :style="{ width: downloadProgress + '%' }"></div>
+                </div>
+                <div class="progress-text">
+                  <span>正在下载视频... {{ downloadProgress }}%</span>
+                </div>
+              </div>
+              <button class="cancel-btn" @click="cancelDownload">取消</button>
+            </div>
+            <div v-else class="link-upload-actions">
+              <button class="cancel-btn" @click="showLinkUploadForm = false">取消</button>
+              <button 
+                class="upload-confirm-btn" 
+                :disabled="!videoLink || !isValidUrl(videoLink)"
+                @click="downloadAndUploadVideo">
+                开始下载并上传
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- 上传视频弹窗 -->
     <div class="modal-overlay" v-if="showUploadForm" @click.self="showUploadForm = false">
@@ -253,6 +301,11 @@ export default {
     return {
       searchQuery: '',
       showUploadForm: false,
+      showLinkUploadForm: false,
+      videoLink: '',
+      isDownloading: false,
+      downloadProgress: 0,
+      downloadRequest: null,
       dragOver: false,
       isUploading: false,
       uploadProgress: 0,
@@ -493,6 +546,110 @@ export default {
       if (this.$refs.fileInput) {
         this.$refs.fileInput.value = '';
       }
+    },
+    isValidUrl(url) {
+      try {
+        const urlObj = new URL(url);
+        return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+      } catch (e) {
+        return false;
+      }
+    },
+    async downloadAndUploadVideo() {
+      if (!this.videoLink || !this.isValidUrl(this.videoLink)) {
+        alert('请输入有效的视频链接');
+        return;
+      }
+
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+      this.isDownloading = true;
+      this.downloadProgress = 0;
+
+      try {
+        // 调用后端API下载并上传视频
+        const response = await fetch(`${apiBaseUrl}/videos/upload-from-url`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            videoUrl: this.videoLink
+          })
+        });
+
+        const data = await response.json();
+        
+        if (data.code === 200 && data.data) {
+          let uploadResult = data.data;
+          if (typeof uploadResult === 'string') {
+            uploadResult = JSON.parse(uploadResult);
+          }
+          const fileName = uploadResult.videoFileName;
+          const coverUrl = uploadResult.coverUrl;
+
+          // 调用 /api/videos/info 保存视频元数据
+          try {
+            const saveResponse = await fetch(`${apiBaseUrl}/videos/info`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                title: this.extractFileNameFromUrl(this.videoLink) || '从链接上传的视频',
+                description: '',
+                fileName: fileName,
+                fileUrl: null,
+                coverUrl: coverUrl || null,
+                userId: 1
+              })
+            });
+            const saveData = await saveResponse.json();
+            if (saveData.code !== 200) {
+              console.error('保存视频信息失败:', saveData.message);
+            }
+          } catch (e) {
+            console.error('保存视频信息失败:', e);
+          }
+
+          // 刷新首页视频列表
+          await this.fetchVideos();
+
+          this.isDownloading = false;
+          this.showLinkUploadForm = false;
+          this.videoLink = '';
+          alert('视频上传成功！');
+        } else {
+          this.isDownloading = false;
+          alert(data.message || '视频下载/上传失败，请检查链接是否可访问');
+        }
+      } catch (e) {
+        console.error('下载并上传视频失败:', e);
+        this.isDownloading = false;
+        alert('视频下载/上传失败，请稍后重试：' + (e.message || '未知错误'));
+      }
+    },
+    extractFileNameFromUrl(url) {
+      try {
+        const urlObj = new URL(url);
+        const pathname = urlObj.pathname;
+        const fileName = pathname.split('/').pop();
+        return fileName || 'video';
+      } catch (e) {
+        return 'video';
+      }
+    },
+    cancelDownload() {
+      if (this.downloadRequest) {
+        try {
+          this.downloadRequest.abort();
+        } catch (e) {
+          console.error('取消下载失败:', e);
+        }
+        this.downloadRequest = null;
+      }
+      this.isDownloading = false;
+      this.downloadProgress = 0;
+      this.videoLink = '';
     },
     searchVideos() {
       const q = this.searchQuery.trim().toLowerCase();
@@ -949,6 +1106,50 @@ export default {
   background-color: #f5f5f5;
 }
 
+.link-upload-area {
+  padding: 20px 0;
+}
+
+.link-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.link-input:focus {
+  outline: none;
+  border-color: #fb7299;
+}
+
+.link-input:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.link-hint {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #999;
+}
+
+.downloading-content {
+  margin-top: 20px;
+}
+
+.download-progress {
+  margin-bottom: 16px;
+}
+
+.link-upload-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
 /* 全局样式 */
 * {
   margin: 0;
@@ -1029,6 +1230,21 @@ export default {
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
+  margin-right: 8px;
+}
+
+.upload-link-btn {
+  padding: 6px 16px;
+  background-color: #1e80ff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.upload-link-btn:hover {
+  background-color: #1171ee;
 }
 
 /* 主要内容区 */
