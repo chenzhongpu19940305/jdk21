@@ -95,16 +95,22 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- 引入二方仓redis -->
+        <dependency>
+            <groupId>com.czp</groupId>
+            <artifactId>czp-redis</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     
     <build>
-<<<<<<< Updated upstream
         <plugins>
+            <!-- Spring Boot Maven Plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <executable>true</executable>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
@@ -113,21 +119,17 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <!-- Maven Compiler Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.12.0</version>
+                <configuration>
+                    <source>21</source>
+                    <target>21</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
-=======
-    <plugins>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.12.0</version>
-            <configuration>
-                <fork>true</fork>
-                <executable>/usr/lib/jvm/java-21-alibaba-dragonwell-21.0.5.0.5-1.1.al8.x86_64/bin/javac</executable>
-                <release>21</release>
-            </configuration>
-        </plugin>
-    </plugins>
-</build>
->>>>>>> Stashed changes
 </project>

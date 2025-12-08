@@ -1,0 +1,248 @@
+{
+  "info": {
+    "name": "Redis Demo APIs",
+    "_postman_id": "c6a9b7fe-6c7b-4e9f-9d0f-redis-demo",
+    "description": "Redis 常用操作接口示例（基于 /redis-demo）。\n变量 baseUrl 可配置服务地址，例如 http://localhost:8080。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Ping",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/redis-demo/ping"
+      }
+    },
+    {
+      "name": "String - set",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "key", "value": "demo:string", "type": "text" },
+            { "key": "value", "value": "hello", "type": "text" },
+            { "key": "ttlSeconds", "value": "60", "type": "text", "disabled": false }
+          ]
+        },
+        "url": "{{baseUrl}}/redis-demo/string"
+      }
+    },
+    {
+      "name": "String - get",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/redis-demo/string?key=demo:string",
+          "host": ["{{baseUrl}}"],
+          "path": ["redis-demo", "string"],
+          "query": [{ "key": "key", "value": "demo:string" }]
+        }
+      }
+    },
+    {
+      "name": "Key - delete",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/redis-demo/key?key=demo:string",
+          "host": ["{{baseUrl}}"],
+          "path": ["redis-demo", "key"],
+          "query": [{ "key": "key", "value": "demo:string" }]
+        }
+      }
+    },
+    {
+      "name": "String - incr",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "key", "value": "demo:counter", "type": "text" },
+            { "key": "delta", "value": "1", "type": "text" }
+          ]
+        },
+        "url": "{{baseUrl}}/redis-demo/incr"
+      }
+    },
+    {
+      "name": "Hash - put",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "key", "value": "demo:hash", "type": "text" },
+            { "key": "field", "value": "name", "type": "text" },
+            { "key": "value", "value": "redis", "type": "text" }
+          ]
+        },
+        "url": "{{baseUrl}}/redis-demo/hash"
+      }
+    },
+    {
+      "name": "Hash - get all",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/redis-demo/hash?key=demo:hash",
+          "host": ["{{baseUrl}}"],
+          "path": ["redis-demo", "hash"],
+          "query": [{ "key": "key", "value": "demo:hash" }]
+        }
+      }
+    },
+    {
+      "name": "List - LPUSH",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "key", "value": "demo:list", "type": "text" },
+            { "key": "value", "value": "a", "type": "text" }
+          ]
+        },
+        "url": "{{baseUrl}}/redis-demo/list/push-left"
+      }
+    },
+    {
+      "name": "List - RPUSH",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "key", "value": "demo:list", "type": "text" },
+            { "key": "value", "value": "b", "type": "text" }
+          ]
+        },
+        "url": "{{baseUrl}}/redis-demo/list/push-right"
+      }
+    },
+    {
+      "name": "List - range",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/redis-demo/list?key=demo:list&start=0&end=-1",
+          "host": ["{{baseUrl}}"],
+          "path": ["redis-demo", "list"],
+          "query": [
+            { "key": "key", "value": "demo:list" },
+            { "key": "start", "value": "0" },
+            { "key": "end", "value": "-1" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Set - add",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "key", "value": "demo:set", "type": "text" },
+            { "key": "values", "value": "x", "type": "text" },
+            { "key": "values", "value": "y", "type": "text" }
+          ]
+        },
+        "url": "{{baseUrl}}/redis-demo/set"
+      }
+    },
+    {
+      "name": "Set - members",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/redis-demo/set?key=demo:set",
+          "host": ["{{baseUrl}}"],
+          "path": ["redis-demo", "set"],
+          "query": [{ "key": "key", "value": "demo:set" }]
+        }
+      }
+    },
+    {
+      "name": "ZSet - add",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "key", "value": "demo:zset", "type": "text" },
+            { "key": "member", "value": "m1", "type": "text" },
+            { "key": "score", "value": "1.0", "type": "text" }
+          ]
+        },
+        "url": "{{baseUrl}}/redis-demo/zset"
+      }
+    },
+    {
+      "name": "ZSet - range",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/redis-demo/zset?key=demo:zset&start=0&end=-1",
+          "host": ["{{baseUrl}}"],
+          "path": ["redis-demo", "zset"],
+          "query": [
+            { "key": "key", "value": "demo:zset" },
+            { "key": "start", "value": "0" },
+            { "key": "end", "value": "-1" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Key - expire",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "key", "value": "demo:string", "type": "text" },
+            { "key": "ttlSeconds", "value": "30", "type": "text" }
+          ]
+        },
+        "url": "{{baseUrl}}/redis-demo/expire"
+      }
+    },
+    {
+      "name": "Key - ttl",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/redis-demo/ttl?key=demo:string",
+          "host": ["{{baseUrl}}"],
+          "path": ["redis-demo", "ttl"],
+          "query": [{ "key": "key", "value": "demo:string" }]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ]
+}
+
